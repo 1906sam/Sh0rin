@@ -68,8 +68,8 @@ class GuestUsersTable extends Table
 
         $validator
             ->dateTime('modified_date')
-            ->requirePresence('modified_date', 'create')
-            ->notEmpty('modified_date');
+            ->requirePresence('modified_date', 'update')
+            ->allowEmpty('modified_date');
 
         return $validator;
     }

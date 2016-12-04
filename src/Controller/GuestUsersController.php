@@ -49,15 +49,49 @@ class GuestUsersController extends AppController
     public function add()
     {
         $guestUser = $this->GuestUsers->newEntity();
-        if ($this->request->is('post')) {
-            debug($_POST); die();
-            $guestUser = $this->GuestUsers->patchEntity($guestUser, $this->request->data);
-            if ($this->GuestUsers->save($guestUser)) {
-                $this->Flash->success(__('The guest user has been saved.'));
+        if ($this->request->is('post'))
+        {
+            //debug($_POST); //die();
 
-                return $this->redirect(['action' => 'index']);
+            //generating random token for shortened url mapping
+            $token = bin2hex(openssl_random_pseudo_bytes(6));
+            $shortenedUrlValue = null;
+
+            $sessionArray = array(
+                'long_url' => $_POST['longUrl'],
+                'created_date' => date("Y-m-d H:i:s"),
+                'ip_address' => $_SERVER['REMOTE_ADDR']
+            );
+
+            if(isset($_POST['customUrl']) && $_POST['customUrl'] != '')
+            {
+                $sessionArray['custom_url'] = $_POST['customUrl'];
+                $shortenedUrlValue = $_POST['customUrl'];
+            }
+            else
+            {
+                $sessionArray['short_url'] = $token;
+                $shortenedUrlValue = $token;
+            }
+
+            //debug($sessionArray);
+
+            $guestUser = $this->GuestUsers->patchEntity($guestUser, $sessionArray);
+            if ($this->GuestUsers->save($guestUser))
+            {
+                echo $shortenedUrlValue;
+                $this->set(compact('guestUser'));
+                $this->set('_serialize', ['guestUser']);
+                die();
+//                $this->Flash->success(__('The guest user has been saved.'));
+//
+//                return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error(__('The guest user could not be saved. Please, try again.'));
+                echo "error";
+                $this->set(compact('guestUser'));
+                $this->set('_serialize', ['guestUser']);
+                die();
+                //$this->Flash->error(__('The guest user could not be saved. Please, try again.'));
             }
         }
         $this->set(compact('guestUser'));

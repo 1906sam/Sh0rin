@@ -1,6 +1,11 @@
 <script>
 
-    function submitFormData() {
+    function submitFormData()
+    {
+        var element = document.querySelector("form");
+        element.addEventListener("submit",function (event) {
+            event.preventDefault();
+        });
         
         var longUrl = document.getElementById('longUrlId').value;
         var customUrl = document.getElementById('customUrlID').value;
@@ -12,6 +17,10 @@
                 type: 'POST',
                 data: 'longUrl=' + longUrl+"&customUrl="+customUrl,
                 success: function (data) {
+                    if(data == "error")
+                        alert("Url shortening failed. Please try again!");
+                    else
+                        document.getElementById('labelData').innerHTML = "Shortened Url is: http://sh0r.in/"+data;
                 },
                 dataType: 'text'
             });
@@ -23,6 +32,10 @@
                 type: 'POST',
                 data: 'longUrl=' + longUrl,
                 success: function (data) {
+                    if(data == "error")
+                        alert("Url shortening failed. Please try again!");
+                    else
+                        document.getElementById('labelData').innerHTML = "Shortened Url is: http://sh0r.in/"+data;
                 },
                 dataType: 'text'
             });
@@ -35,14 +48,14 @@
     <fieldset>
         <legend><?= __('Add Guest User') ?></legend>
         <?php
-            echo $this->Form->input('ip_address',['value' => $_SERVER['REMOTE_ADDR'],'type' => 'hidden']);
+            //echo $this->Form->input('ip_address',['value' => $_SERVER['REMOTE_ADDR'],'type' => 'hidden']);
             echo $this->Form->input('long_url',['id'=>'longUrlId']);
             echo $this->Form->input('custom_url',['id'=>'customUrlID']);
-            echo $this->Form->input('created_date',['value' => date("Y-m-d H:i:s"),'type' => 'hidden']);
+           // echo $this->Form->input('created_date',['value' => date("Y-m-d H:i:s"),'type' => 'hidden']);
 //            echo $this->Form->input('modified_date');
         ?>
     </fieldset>
     <?= $this->Form->button('Submit',['type' => 'submit','onclick' => 'submitFormData();']) ?>
     <?= $this->Form->end() ?>
-    <?php echo $this->Form->label('Sh u is: '); ?>
+    <label id="labelData">Shortened Url is: http://sh0r.in/</label>
 </div>

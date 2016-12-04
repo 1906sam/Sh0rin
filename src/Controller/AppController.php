@@ -28,6 +28,7 @@ use Cake\Event\Event;
 class AppController extends Controller
 {
 
+    //public $components = array('DebugKit.Toolbar');
     /**
      * Initialization hook method.
      *
